@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: study-k8s-rails-web-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: study-k8s-rails-web
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - image: study/web:0.5
+          name: web
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http-server
+              containerPort: 80
+            - name: https-server
+              containerPort: 443
+          volumeMounts:
+            - mountPath: /usr/local/src/study_k8s_rails/public
+              name: web-assets
+              readOnly: true
+            - mountPath: /usr/local/src/study_k8s_rails/tmp/sockets
+              name: web-sock
+        - image: study/app:0.5
+          name: app
+          imagePullPolicy: IfNotPresent
+          command: ["bundle", "exec", "puma", "-C", "config/puma/production.rb"]
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "bundle exec pumactl -P tmp/pids/puma.pid halt && sleep 60"]
+          env:
+            - name: RAILS_ENV
+              value: production
+            - name: SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: rails
+                  key: secret-key
+          volumeMounts:
+            - mountPath: /usr/local/src/study_k8s_rails/public
+              name: web-assets
+            - mountPath: /usr/local/src/study_k8s_rails/tmp/sockets
+              name: web-sock
+      volumes:
+        - name: web-assets
+          emptyDir: {}
+        - name: web-sock
+          emptyDir: {}

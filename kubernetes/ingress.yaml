@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: study-k8s-rails-ingress
+  annotations:
+spec:
+  rules:
+  - http:
+      paths:
+        - backend:
+            serviceName: study-k8s-rails-service
+            servicePort: 80

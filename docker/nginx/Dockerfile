@@ -4,7 +4,7 @@ FROM nginx:1.13.3
 RUN rm -f /etc/nginx/conf.d/*
 
 # Nginxの設定ファイルをコンテナにコピー
-ADD nginx.conf /etc/nginx/conf.d/sample.conf
+ADD nginx.conf /etc/nginx/conf.d/study_k8s_rails.conf
 
 # ビルド完了後にNginxを起動
 CMD /usr/sbin/nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
