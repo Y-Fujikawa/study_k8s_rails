@@ -9,4 +9,3 @@ ADD Gemfile.lock /usr/local/src/study_k8s_rails/Gemfile.lock
 RUN bundle install --jobs=4
 RUN mkdir -p /tmp/public && \
     cp -rf ./public/* /tmp/public
-CMD cp -rf /tmp/public/* /usr/local/src/study_k8s_rails/public

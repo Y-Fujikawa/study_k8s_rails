@@ -7,7 +7,7 @@ services:
   app:
     build: .
     volumes:
-      - .:/usr/local/src/sample_k8s_rails/
+      - .:/usr/local/src/study_k8s_rails
     tty: true
     stdin_open: true
     command: sh -c 'rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b 0.0.0.0'
