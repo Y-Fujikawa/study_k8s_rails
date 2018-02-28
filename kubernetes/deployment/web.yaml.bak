@@ -1,16 +1,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  # Deploymentの名前、ユニークであること
   name: study-k8s-rails-web-deployment
 spec:
+  # レプリカ数の指定
+  # 「5」の場合、最低5Pod起動している状態
+  replicas: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # どれだけ超過podを許すか
+      maxSurge: 3
+      # 使えなくなるpod数
+      maxUnavailable: 1
   template:
     metadata:
       labels:
+        # ラベル指定は必須
         app: study-k8s-rails-web
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-        - image: study/web:2.0
+        - image: study/web:TIMESTAMP
           name: web
           imagePullPolicy: IfNotPresent
           ports:
@@ -29,7 +41,7 @@ spec:
             initialDelaySeconds: 5 # 5s後にチェックする
             timeoutSeconds: 3 # 3s 以上は timeout
             failureThreshold: 10 # 失敗回数
-        - image: study/app:2.0
+        - image: study/app:TIMESTAMP
           name: app
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh"]
